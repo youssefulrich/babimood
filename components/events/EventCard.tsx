@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Calendar, MapPin, MessageCircle } from "lucide-react";
 import { Event } from "@/types";
@@ -13,46 +12,77 @@ export default function EventCard({ event, featured = false }: EventCardProps) {
   return (
     <Link href={`/events/${event.id}`} className="group block">
       <div
-        className={`card-dark transition-all duration-300 group-hover:border-violet-600/30 group-hover:violet-glow ${
-          featured ? "h-full" : ""
-        }`}
+        style={{
+          background: "#1A1A1A",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: "1rem",
+          overflow: "hidden",
+          transition: "border-color 0.3s, box-shadow 0.3s",
+          height: featured ? "100%" : undefined,
+        }}
+        className="group-hover:border-violet-600/30 group-hover:violet-glow"
       >
-        {/* Image */}
-        <div className="relative overflow-hidden aspect-[4/3]">
-          <Image
+        {/* Image COMPLÈTE sans crop */}
+        <div style={{ position: "relative", width: "100%", background: "#000" }}>
+          <img
             src={event.image_url || "/images/placeholder-event.jpg"}
             alt={event.title}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+              objectFit: "contain",
+              transition: "transform 0.5s",
+            }}
+            className="group-hover:scale-[1.02]"
           />
-          {/* Gradient overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
 
-          {/* Featured badge */}
+          {/* Badges */}
           {event.is_featured && (
-            <div className="absolute top-3 left-3">
-              <span className="badge bg-violet-600 text-white text-[10px]">
+            <div style={{ position: "absolute", top: "10px", left: "10px" }}>
+              <span
+                style={{
+                  background: "#7c3aed",
+                  color: "white",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  padding: "3px 10px",
+                  borderRadius: "9999px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                }}
+              >
                 ✦ Featured
               </span>
             </div>
           )}
 
-          {/* Category badge */}
-          <div className="absolute top-3 right-3">
-            <span className={`badge text-white text-[10px] ${categoryColors[event.category]}`}>
+          <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+            <span
+              className={`badge text-white ${categoryColors[event.category]}`}
+              style={{ fontSize: "10px" }}
+            >
               {categoryLabels[event.category]}
             </span>
           </div>
 
-          {/* Date overlay */}
-          <div className="absolute bottom-3 left-3">
-            <div className="flex items-center gap-1.5 text-white/90 text-xs font-medium">
-              <Calendar size={12} />
+          {/* Date en bas de l'image */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              padding: "1.5rem 0.75rem 0.6rem",
+              background: "linear-gradient(to top, rgba(0,0,0,0.85), transparent)",
+            }}
+          >
+            <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "rgba(255,255,255,0.85)", fontSize: "12px", fontWeight: 500 }}>
+              <Calendar size={11} />
               <span>{formatDateShort(event.date)}</span>
               {event.time && (
                 <>
-                  <span className="text-white/40">·</span>
+                  <span style={{ color: "rgba(255,255,255,0.3)" }}>·</span>
                   <span>{event.time}</span>
                 </>
               )}
@@ -60,45 +90,71 @@ export default function EventCard({ event, featured = false }: EventCardProps) {
           </div>
         </div>
 
-        {/* Content */}
-        <div className="p-4">
-          <h3 className="font-display font-bold text-white text-base leading-tight mb-2 line-clamp-2 group-hover:text-violet-300 transition-colors">
+        {/* Contenu texte */}
+        <div style={{ padding: "1rem" }}>
+          <h3
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              color: "#fff",
+              fontSize: "1rem",
+              lineHeight: 1.3,
+              marginBottom: "0.5rem",
+              transition: "color 0.2s",
+            }}
+            className="group-hover:text-violet-300 line-clamp-2"
+          >
             {event.title}
           </h3>
 
-          <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-3">
+          <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "#666", fontSize: "12px", marginBottom: "0.75rem" }}>
             <MapPin size={11} />
-            <span className="truncate">{event.location}</span>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {event.location}
+            </span>
           </div>
 
           {event.description && (
-            <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-4">
+            <p
+              style={{ color: "#555", fontSize: "12px", lineHeight: 1.5, marginBottom: "1rem" }}
+              className="line-clamp-2"
+            >
               {event.description}
             </p>
           )}
 
-          <div className="flex items-center justify-between">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
             {event.price ? (
-              <span className="text-violet-400 text-sm font-bold">
+              <span style={{ color: "#a78bfa", fontSize: "0.9rem", fontWeight: 700 }}>
                 {event.price.toLocaleString()} FCFA
               </span>
             ) : (
-              <span className="text-green-500 text-xs font-medium">Gratuit</span>
+              <span style={{ color: "#22c55e", fontSize: "12px", fontWeight: 600 }}>Gratuit</span>
             )}
 
             {event.whatsapp_link && (
-              <button
-                type="button"
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  window.open(event.whatsapp_link!, "_blank", "noopener,noreferrer");
+              <a
+                href={event.whatsapp_link}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  fontSize: "12px",
+                  background: "rgba(34,197,94,0.1)",
+                  color: "#4ade80",
+                  padding: "5px 12px",
+                  borderRadius: "9999px",
+                  border: "1px solid rgba(34,197,94,0.2)",
+                  textDecoration: "none",
+                  transition: "background 0.2s",
                 }}
-                className="flex items-center gap-1.5 text-xs bg-green-600/10 hover:bg-green-600/20 text-green-400 px-3 py-1.5 rounded-lg transition-colors"
               >
                 <MessageCircle size={11} />
                 Réserver
-              </button>
+              </a>
             )}
           </div>
         </div>

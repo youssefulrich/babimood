@@ -16,111 +16,211 @@ export default async function EventDetailPage({
   if (!event) notFound();
 
   return (
-    <div className="min-h-screen pt-20 pb-20">
-      {/* Hero image */}
-      <div className="relative h-[50vh] md:h-[60vh] overflow-hidden">
-        <Image
-          src={event.image_url || "/images/placeholder-event.jpg"}
-          alt={event.title}
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
+    <div className="min-h-screen" style={{ background: "#080808" }}>
 
-        {/* Back button */}
-        <div className="absolute top-8 left-4 md:left-8 z-10">
+      {/* ── IMAGE COMPLÈTE ── */}
+      <div style={{ position: "relative", width: "100%", background: "#000" }}>
+
+        {/* Boutons overlay */}
+        <div style={{ position: "absolute", top: "5rem", left: "1.5rem", zIndex: 20 }}>
           <Link
             href="/events"
-            className="flex items-center gap-2 bg-black/50 backdrop-blur-sm border border-white/10 text-white px-4 py-2 rounded-full text-sm hover:bg-black/70 transition-colors"
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
+              background: "rgba(0,0,0,0.6)",
+              backdropFilter: "blur(10px)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              color: "white",
+              padding: "0.5rem 1.2rem",
+              borderRadius: "9999px",
+              fontSize: "0.875rem",
+              textDecoration: "none",
+            }}
           >
             <ArrowLeft size={14} />
             Retour
           </Link>
         </div>
 
-        {/* Category */}
-        <div className="absolute top-8 right-4 md:right-8 z-10">
-          <span className={`badge text-white ${categoryColors[event.category]}`}>
+        <div style={{ position: "absolute", top: "5rem", right: "1.5rem", zIndex: 20 }}>
+          <span
+            className={`badge text-white ${categoryColors[event.category]}`}
+            style={{ fontSize: "11px", padding: "0.35rem 0.9rem" }}
+          >
             {categoryLabels[event.category]}
           </span>
         </div>
+
+        {/* Image COMPLÈTE — pas de crop */}
+        <div style={{ width: "100%", display: "flex", justifyContent: "center", alignItems: "center" }}>
+          <img
+            src={event.image_url || "/images/placeholder-event.jpg"}
+            alt={event.title}
+            style={{
+              width: "100%",
+              maxWidth: "900px",
+              height: "auto",
+              display: "block",
+              margin: "0 auto",
+              objectFit: "contain",
+            }}
+          />
+        </div>
+
+        {/* Fade bottom */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: "120px",
+            background: "linear-gradient(to top, #080808, transparent)",
+          }}
+        />
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 md:px-8 -mt-16 relative z-10">
-        <div className="card-dark p-6 md:p-10">
-          {/* Title */}
-          <h1 className="font-display font-extrabold text-3xl md:text-5xl text-white mb-6 leading-tight">
+      {/* ── CONTENU ── */}
+      <div style={{ maxWidth: "800px", margin: "0 auto", padding: "0 1.5rem 5rem" }}>
+        <div
+          style={{
+            background: "rgba(26,26,26,0.9)",
+            border: "1px solid rgba(255,255,255,0.07)",
+            borderRadius: "1.5rem",
+            padding: "2.5rem",
+            marginTop: "-2rem",
+            position: "relative",
+            zIndex: 10,
+            backdropFilter: "blur(10px)",
+          }}
+        >
+          {/* Titre */}
+          <h1
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 800,
+              fontSize: "clamp(2rem, 5vw, 3rem)",
+              color: "#fff",
+              lineHeight: 1.1,
+              marginBottom: "2rem",
+            }}
+          >
             {event.title}
           </h1>
 
-          {/* Meta */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8 pb-8 border-b border-white/5">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-violet-600/20 flex items-center justify-center flex-shrink-0">
-                <Calendar size={16} className="text-violet-400" />
-              </div>
-              <div>
-                <p className="text-gray-500 text-xs uppercase tracking-wider">Date</p>
-                <p className="text-white text-sm font-medium">{formatDate(event.date)}</p>
-              </div>
-            </div>
-
-            {event.time && (
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-violet-600/20 flex items-center justify-center flex-shrink-0">
-                  <Clock size={16} className="text-violet-400" />
+          {/* Meta infos */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+              gap: "1rem",
+              marginBottom: "2rem",
+              paddingBottom: "2rem",
+              borderBottom: "1px solid rgba(255,255,255,0.06)",
+            }}
+          >
+            {[
+              { icon: <Calendar size={16} />, label: "Date", value: formatDate(event.date) },
+              ...(event.time ? [{ icon: <Clock size={16} />, label: "Heure", value: event.time }] : []),
+              { icon: <MapPin size={16} />, label: "Lieu", value: event.location },
+            ].map((item) => (
+              <div
+                key={item.label}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.75rem",
+                  background: "rgba(139,92,246,0.08)",
+                  border: "1px solid rgba(139,92,246,0.15)",
+                  borderRadius: "0.75rem",
+                  padding: "0.85rem 1rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    background: "rgba(139,92,246,0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    color: "#a78bfa",
+                    flexShrink: 0,
+                  }}
+                >
+                  {item.icon}
                 </div>
                 <div>
-                  <p className="text-gray-500 text-xs uppercase tracking-wider">Heure</p>
-                  <p className="text-white text-sm font-medium">{event.time}</p>
+                  <p style={{ color: "rgba(255,255,255,0.35)", fontSize: "10px", textTransform: "uppercase", letterSpacing: "0.08em" }}>
+                    {item.label}
+                  </p>
+                  <p style={{ color: "#fff", fontSize: "0.9rem", fontWeight: 600, marginTop: "2px" }}>
+                    {item.value}
+                  </p>
                 </div>
               </div>
-            )}
-
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-full bg-violet-600/20 flex items-center justify-center flex-shrink-0">
-                <MapPin size={16} className="text-violet-400" />
-              </div>
-              <div>
-                <p className="text-gray-500 text-xs uppercase tracking-wider">Lieu</p>
-                <p className="text-white text-sm font-medium">{event.location}</p>
-              </div>
-            </div>
+            ))}
           </div>
+
+          {/* Prix */}
+          {event.price !== undefined && (
+            <div
+              style={{
+                background: "rgba(139,92,246,0.1)",
+                border: "1px solid rgba(139,92,246,0.2)",
+                borderRadius: "0.75rem",
+                padding: "1rem 1.25rem",
+                marginBottom: "1.5rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.8rem" }}>Tarif d&apos;entrée</p>
+              <p style={{ color: "#a78bfa", fontWeight: 700, fontSize: "1.4rem" }}>
+                {event.price === 0 ? "Gratuit 🎉" : `${event.price.toLocaleString()} FCFA`}
+              </p>
+            </div>
+          )}
 
           {/* Description */}
           {event.description && (
-            <div className="mb-8">
-              <h2 className="text-white font-bold text-lg mb-4">À propos</h2>
-              <p className="text-gray-400 leading-relaxed whitespace-pre-line">
+            <div style={{ marginBottom: "2rem" }}>
+              <h2 style={{ color: "#fff", fontWeight: 700, fontSize: "1.1rem", marginBottom: "0.75rem" }}>
+                À propos
+              </h2>
+              <p style={{ color: "rgba(255,255,255,0.55)", lineHeight: 1.75, whiteSpace: "pre-line", fontSize: "0.95rem" }}>
                 {event.description}
               </p>
             </div>
           )}
 
-          {/* Price */}
-          {event.price !== undefined && (
-            <div className="mb-8 p-4 bg-violet-600/10 border border-violet-600/20 rounded-xl">
-              <p className="text-gray-400 text-sm">Tarif</p>
-              <p className="text-violet-400 font-bold text-2xl">
-                {event.price === 0
-                  ? "Gratuit"
-                  : `${event.price.toLocaleString()} FCFA`}
-              </p>
-            </div>
-          )}
-
           {/* CTAs */}
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
             {event.whatsapp_link && (
               <a
                 href={event.whatsapp_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-2 bg-green-600 hover:bg-green-500 text-white font-medium px-8 py-4 rounded-full transition-colors flex-1"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.6rem",
+                  background: "#16a34a",
+                  color: "white",
+                  fontWeight: 600,
+                  padding: "1rem",
+                  borderRadius: "9999px",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  transition: "background 0.2s",
+                }}
               >
-                <MessageCircle size={18} />
+                <MessageCircle size={20} />
                 Réserver via WhatsApp
               </a>
             )}
@@ -129,9 +229,22 @@ export default async function EventDetailPage({
                 href={event.ticket_link}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="btn-primary justify-center flex-1 py-4"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "0.6rem",
+                  background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                  color: "white",
+                  fontWeight: 600,
+                  padding: "1rem",
+                  borderRadius: "9999px",
+                  textDecoration: "none",
+                  fontSize: "1rem",
+                  boxShadow: "0 0 20px rgba(124,58,237,0.4)",
+                }}
               >
-                <ExternalLink size={16} />
+                <ExternalLink size={18} />
                 Acheter un ticket
               </a>
             )}

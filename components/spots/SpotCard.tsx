@@ -1,6 +1,3 @@
-"use client";
-
-import Image from "next/image";
 import Link from "next/link";
 import { MapPin, MessageCircle, ExternalLink } from "lucide-react";
 import { Spot } from "@/types";
@@ -15,66 +12,141 @@ export default function SpotCard({ spot }: SpotCardProps) {
 
   return (
     <Link href={`/spots/${spot.id}`} className="group block">
-      <div className="card-dark transition-all duration-300 group-hover:border-violet-600/30 group-hover:violet-glow">
-        {/* Image */}
-        <div className="relative overflow-hidden aspect-[3/2]">
-          <Image
+      <div
+        style={{
+          background: "#1A1A1A",
+          border: "1px solid rgba(255,255,255,0.06)",
+          borderRadius: "1rem",
+          overflow: "hidden",
+          transition: "border-color 0.3s, box-shadow 0.3s",
+        }}
+        className="group-hover:border-violet-600/30 group-hover:violet-glow"
+      >
+        {/* Image COMPLÈTE sans crop */}
+        <div style={{ position: "relative", width: "100%", background: "#000" }}>
+          <img
             src={mainImage}
             alt={spot.name}
-            fill
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            style={{
+              width: "100%",
+              height: "auto",
+              display: "block",
+              objectFit: "contain",
+              transition: "transform 0.5s",
+            }}
+            className="group-hover:scale-[1.02]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent" />
 
           {/* Type badge */}
-          <div className="absolute top-3 left-3">
-            <span className="badge bg-black/60 backdrop-blur-sm text-gray-300 border border-white/10 text-[10px]">
+          <div style={{ position: "absolute", top: "10px", left: "10px" }}>
+            <span
+              style={{
+                background: "rgba(0,0,0,0.65)",
+                backdropFilter: "blur(8px)",
+                color: "rgba(255,255,255,0.8)",
+                fontSize: "10px",
+                fontWeight: 600,
+                padding: "3px 10px",
+                borderRadius: "9999px",
+                border: "1px solid rgba(255,255,255,0.12)",
+                textTransform: "uppercase",
+                letterSpacing: "0.05em",
+              }}
+            >
               {spotTypeLabels[spot.type]}
             </span>
           </div>
 
           {spot.is_featured && (
-            <div className="absolute top-3 right-3">
-              <span className="badge bg-violet-600 text-white text-[10px]">
+            <div style={{ position: "absolute", top: "10px", right: "10px" }}>
+              <span
+                style={{
+                  background: "#7c3aed",
+                  color: "white",
+                  fontSize: "10px",
+                  fontWeight: 600,
+                  padding: "3px 10px",
+                  borderRadius: "9999px",
+                  textTransform: "uppercase",
+                  letterSpacing: "0.05em",
+                }}
+              >
                 ✦ Top Spot
               </span>
             </div>
           )}
+
+          {/* Fade bottom */}
+          <div
+            style={{
+              position: "absolute",
+              bottom: 0,
+              left: 0,
+              right: 0,
+              height: "60px",
+              background: "linear-gradient(to top, rgba(26,26,26,1), transparent)",
+            }}
+          />
         </div>
 
-        {/* Content */}
-        <div className="p-4">
-          <h3 className="font-display font-bold text-white text-base mb-1 group-hover:text-violet-300 transition-colors">
+        {/* Contenu texte */}
+        <div style={{ padding: "1rem" }}>
+          <h3
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 700,
+              color: "#fff",
+              fontSize: "1rem",
+              marginBottom: "4px",
+              transition: "color 0.2s",
+            }}
+            className="group-hover:text-violet-300"
+          >
             {spot.name}
           </h3>
 
           {spot.vibe && (
-            <p className="text-violet-400 text-xs font-medium mb-2 italic">
+            <p style={{ color: "#a78bfa", fontSize: "12px", fontStyle: "italic", marginBottom: "0.5rem" }}>
               {spot.vibe}
             </p>
           )}
 
-          <div className="flex items-center gap-1.5 text-gray-400 text-xs mb-3">
+          <div style={{ display: "flex", alignItems: "center", gap: "5px", color: "#666", fontSize: "12px", marginBottom: "0.75rem" }}>
             <MapPin size={11} />
-            <span className="truncate">{spot.location}</span>
+            <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+              {spot.location}
+            </span>
           </div>
 
           {spot.description && (
-            <p className="text-gray-500 text-xs leading-relaxed line-clamp-2 mb-4">
+            <p
+              style={{ color: "#555", fontSize: "12px", lineHeight: 1.5, marginBottom: "1rem" }}
+              className="line-clamp-2"
+            >
               {spot.description}
             </p>
           )}
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
             {spot.whatsapp_number && (
               <a
                 href={`https://wa.me/${spot.whatsapp_number.replace(/\D/g, "")}`}
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1.5 text-xs bg-green-600/10 hover:bg-green-600/20 text-green-400 px-3 py-1.5 rounded-full transition-colors border border-green-600/20"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  fontSize: "12px",
+                  background: "rgba(34,197,94,0.1)",
+                  color: "#4ade80",
+                  padding: "5px 12px",
+                  borderRadius: "9999px",
+                  border: "1px solid rgba(34,197,94,0.2)",
+                  textDecoration: "none",
+                }}
               >
                 <MessageCircle size={11} />
                 WhatsApp
@@ -86,7 +158,18 @@ export default function SpotCard({ spot }: SpotCardProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={(e) => e.stopPropagation()}
-                className="flex items-center gap-1.5 text-xs bg-pink-600/10 hover:bg-pink-600/20 text-pink-400 px-3 py-1.5 rounded-full transition-colors border border-pink-600/20"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "5px",
+                  fontSize: "12px",
+                  background: "rgba(236,72,153,0.1)",
+                  color: "#f472b6",
+                  padding: "5px 12px",
+                  borderRadius: "9999px",
+                  border: "1px solid rgba(236,72,153,0.2)",
+                  textDecoration: "none",
+                }}
               >
                 <ExternalLink size={11} />
                 Insta

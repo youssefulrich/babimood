@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight, MapPin } from "lucide-react";
+import { ArrowRight, MapPin, Calendar, Zap } from "lucide-react";
 import { getFeaturedEvents, getFeaturedSpots } from "@/lib/queries";
 import EventCard from "@/components/events/EventCard";
 import SpotCard from "@/components/spots/SpotCard";
@@ -14,93 +14,372 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* HERO */}
+      {/* ── HERO ─────────────────────────────────────────── */}
       <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-radial from-violet-950/40 via-black to-black" />
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/10 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute bottom-1/4 right-1/4 w-64 h-64 bg-violet-800/10 rounded-full blur-3xl pointer-events-none" />
+
+        {/* Background image */}
         <div
-          className="absolute inset-0 opacity-5"
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{
-            backgroundImage:
-              "linear-gradient(rgba(139,92,246,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,0.5) 1px, transparent 1px)",
-            backgroundSize: "60px 60px",
+            backgroundImage: "url('https://images.unsplash.com/photo-1571266028243-d220c6a8d5fd?w=1800&q=80')",
           }}
         />
-        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 text-center pt-24 pb-16">
-          <div className="inline-flex items-center gap-2 border border-violet-600/30 bg-violet-600/10 px-4 py-2 rounded-full mb-8">
-            <MapPin size={12} className="text-violet-400" />
-            <span className="text-violet-300 text-xs font-medium uppercase tracking-widest">
+
+        {/* Dark overlays */}
+        <div className="absolute inset-0 bg-black/60" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-black/40" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/30 via-transparent to-black/30" />
+
+        {/* Violet neon glow */}
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-violet-600/20 rounded-full blur-3xl" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[400px] h-[400px] bg-violet-900/20 rounded-full blur-3xl" />
+
+        {/* Grid lines overlay */}
+        <div
+          className="absolute inset-0 opacity-[0.04]"
+          style={{
+            backgroundImage:
+              "linear-gradient(rgba(139,92,246,1) 1px, transparent 1px), linear-gradient(90deg, rgba(139,92,246,1) 1px, transparent 1px)",
+            backgroundSize: "80px 80px",
+          }}
+        />
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 md:px-8 text-center pt-32 pb-20">
+
+          {/* Location pill */}
+          <div
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full mb-10"
+            style={{
+              background: "rgba(139,92,246,0.15)",
+              border: "1px solid rgba(139,92,246,0.4)",
+              backdropFilter: "blur(10px)",
+            }}
+          >
+            <MapPin size={13} className="text-violet-400" />
+            <span style={{ color: "#c4b5fd", fontSize: "11px", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase" }}>
               Abidjan, Côte d&apos;Ivoire
             </span>
+            <span className="w-1.5 h-1.5 rounded-full bg-violet-400 animate-pulse" />
           </div>
-          <h1 className="font-display font-extrabold text-5xl md:text-7xl lg:text-8xl text-white leading-none tracking-tight mb-6">
-            Où sortir<br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-violet-600">
+
+          {/* Main title */}
+          <h1
+            style={{
+              fontFamily: "Syne, sans-serif",
+              fontWeight: 800,
+              fontSize: "clamp(3rem, 10vw, 7rem)",
+              lineHeight: 1,
+              letterSpacing: "-0.03em",
+              color: "#ffffff",
+              marginBottom: "1.5rem",
+            }}
+          >
+            Où sortir
+            <br />
+            <span
+              style={{
+                background: "linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #c084fc 100%)",
+                WebkitBackgroundClip: "text",
+                WebkitTextFillColor: "transparent",
+                backgroundClip: "text",
+              }}
+            >
               ce soir ?
             </span>
           </h1>
-          <p className="text-gray-400 text-lg md:text-xl max-w-xl mx-auto mb-10 leading-relaxed">
+
+          <p
+            style={{
+              color: "rgba(255,255,255,0.6)",
+              fontSize: "clamp(1rem, 2.5vw, 1.2rem)",
+              maxWidth: "520px",
+              margin: "0 auto 2.5rem",
+              lineHeight: 1.7,
+            }}
+          >
             Les meilleurs événements, clubs, plages et spots tendance d&apos;Abidjan — au même endroit.
           </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Link href="/events" className="btn-primary text-base px-8 py-4">
-              Voir les événements <ArrowRight size={16} />
+
+          {/* CTA buttons */}
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-20">
+            <Link
+              href="/events"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                color: "white",
+                fontWeight: 600,
+                padding: "1rem 2rem",
+                borderRadius: "9999px",
+                fontSize: "0.95rem",
+                textDecoration: "none",
+                boxShadow: "0 0 30px rgba(124,58,237,0.5), 0 4px 20px rgba(0,0,0,0.3)",
+                transition: "all 0.3s",
+                border: "1px solid rgba(167,139,250,0.3)",
+              }}
+            >
+              <Calendar size={16} />
+              Voir les événements
+              <ArrowRight size={16} />
             </Link>
-            <Link href="/spots" className="btn-outline text-base px-8 py-4">
+            <Link
+              href="/spots"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "10px",
+                background: "rgba(255,255,255,0.05)",
+                color: "rgba(255,255,255,0.9)",
+                fontWeight: 600,
+                padding: "1rem 2rem",
+                borderRadius: "9999px",
+                fontSize: "0.95rem",
+                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.15)",
+                backdropFilter: "blur(10px)",
+                transition: "all 0.3s",
+              }}
+            >
               Explorer les spots
             </Link>
           </div>
-          <div className="flex items-center justify-center gap-8 mt-16 pt-8 border-t border-white/5">
-            {[{ n: "50+", label: "Événements" }, { n: "30+", label: "Top Spots" }, { n: "10k+", label: "Followers" }].map((s) => (
-              <div key={s.label} className="text-center">
-                <div className="font-display font-extrabold text-2xl text-white">{s.n}</div>
-                <div className="text-gray-500 text-xs mt-1">{s.label}</div>
+
+          {/* Stats bar — glassmorphism */}
+          <div
+            style={{
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "0",
+              background: "rgba(255,255,255,0.04)",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "9999px",
+              backdropFilter: "blur(20px)",
+              padding: "0",
+              overflow: "hidden",
+            }}
+          >
+            {[
+              { n: "50+", label: "Événements" },
+              { n: "30+", label: "Top Spots" },
+              { n: "10k+", label: "Followers" },
+            ].map((s, i) => (
+              <div
+                key={s.label}
+                style={{
+                  padding: "1rem 2rem",
+                  textAlign: "center",
+                  borderRight: i < 2 ? "1px solid rgba(255,255,255,0.08)" : "none",
+                }}
+              >
+                <div style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.5rem", color: "#fff" }}>
+                  {s.n}
+                </div>
+                <div style={{ fontSize: "11px", color: "rgba(255,255,255,0.4)", marginTop: "2px", letterSpacing: "0.05em" }}>
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>
         </div>
+
+        {/* Bottom fade */}
+        <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-black to-transparent" />
       </section>
 
-      {/* FEATURED EVENTS */}
-      <section className="max-w-7xl mx-auto px-4 md:px-8 py-20">
-        <div className="flex items-end justify-between mb-10">
-          <div>
-            <p className="text-violet-400 text-xs font-medium uppercase tracking-widest mb-2">À ne pas manquer</p>
-            <h2 className="section-title">Événements du moment</h2>
-          </div>
-          <Link href="/events" className="hidden md:flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
-            Voir tout <ArrowRight size={14} />
-          </Link>
-        </div>
-        {featuredEvents.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {featuredEvents.map((event) => (
-              <EventCard key={event.id} event={event} featured />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-20 border border-white/5 rounded-2xl">
-            <p className="text-gray-500">Aucun événement pour le moment. Reviens bientôt 🔥</p>
-          </div>
-        )}
-        <div className="mt-8 text-center md:hidden">
-          <Link href="/events" className="btn-outline">Tous les événements <ArrowRight size={14} /></Link>
-        </div>
-      </section>
+      {/* ── FEATURED EVENTS ─────────────────────────────── */}
+      <section
+        style={{
+          background: "#080808",
+          padding: "6rem 0",
+          position: "relative",
+        }}
+      >
+        {/* Subtle bg glow */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: "50%",
+            transform: "translateX(-50%)",
+            width: "600px",
+            height: "300px",
+            background: "radial-gradient(ellipse, rgba(124,58,237,0.08) 0%, transparent 70%)",
+            pointerEvents: "none",
+          }}
+        />
 
-      {/* TOP SPOTS */}
-      <section className="bg-gray-900/30 border-y border-white/5 py-20">
-        <div className="max-w-7xl mx-auto px-4 md:px-8">
-          <div className="flex items-end justify-between mb-10">
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+          {/* Section header */}
+          <div className="flex items-end justify-between mb-12">
             <div>
-              <p className="text-violet-400 text-xs font-medium uppercase tracking-widest mb-2">Les incontournables</p>
-              <h2 className="section-title">Top Spots Abidjan</h2>
+              <div className="flex items-center gap-2 mb-3">
+                <Zap size={14} className="text-violet-400" />
+                <span
+                  style={{
+                    color: "#a78bfa",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  À ne pas manquer
+                </span>
+              </div>
+              <h2
+                style={{
+                  fontFamily: "Syne, sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                  color: "#fff",
+                  lineHeight: 1.1,
+                }}
+              >
+                Événements du moment
+              </h2>
             </div>
-            <Link href="/spots" className="hidden md:flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-sm">
+            <Link
+              href="/events"
+              className="hidden md:flex"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "rgba(255,255,255,0.4)",
+                fontSize: "0.875rem",
+                textDecoration: "none",
+                transition: "color 0.2s",
+                border: "1px solid rgba(255,255,255,0.1)",
+                padding: "0.5rem 1.2rem",
+                borderRadius: "9999px",
+              }}
+            >
               Voir tout <ArrowRight size={14} />
             </Link>
           </div>
+
+          {featuredEvents.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredEvents.map((event) => (
+                <EventCard key={event.id} event={event} featured />
+              ))}
+            </div>
+          ) : (
+            /* Empty state avec image */
+            <div
+              style={{
+                position: "relative",
+                borderRadius: "1.5rem",
+                overflow: "hidden",
+                minHeight: "300px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                border: "1px solid rgba(139,92,246,0.2)",
+              }}
+            >
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  backgroundImage: "url('https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?w=1200&q=60')",
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                  filter: "brightness(0.2)",
+                }}
+              />
+              <div className="relative z-10 text-center">
+                <p style={{ fontSize: "3rem", marginBottom: "1rem" }}>🔥</p>
+                <p style={{ color: "rgba(255,255,255,0.6)", fontWeight: 500 }}>
+                  Les événements arrivent bientôt
+                </p>
+                <p style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.875rem", marginTop: "0.5rem" }}>
+                  Reviens très vite
+                </p>
+              </div>
+            </div>
+          )}
+
+          <div className="mt-8 text-center md:hidden">
+            <Link href="/events" className="btn-outline">
+              Tous les événements <ArrowRight size={14} />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── TOP SPOTS ───────────────────────────────────── */}
+      <section style={{ position: "relative", overflow: "hidden", padding: "6rem 0" }}>
+        {/* Background image flouté */}
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            backgroundImage: "url('https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?w=1800&q=60')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            filter: "brightness(0.12) blur(2px)",
+          }}
+        />
+        <div style={{ position: "absolute", inset: 0, background: "rgba(8,8,8,0.85)" }} />
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            background: "linear-gradient(to bottom, #080808 0%, transparent 15%, transparent 85%, #080808 100%)",
+          }}
+        />
+
+        <div className="max-w-7xl mx-auto px-4 md:px-8 relative z-10">
+          <div className="flex items-end justify-between mb-12">
+            <div>
+              <div className="flex items-center gap-2 mb-3">
+                <MapPin size={14} className="text-violet-400" />
+                <span
+                  style={{
+                    color: "#a78bfa",
+                    fontSize: "11px",
+                    fontWeight: 600,
+                    letterSpacing: "0.15em",
+                    textTransform: "uppercase",
+                  }}
+                >
+                  Les incontournables
+                </span>
+              </div>
+              <h2
+                style={{
+                  fontFamily: "Syne, sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(1.8rem, 4vw, 2.8rem)",
+                  color: "#fff",
+                  lineHeight: 1.1,
+                }}
+              >
+                Top Spots Abidjan
+              </h2>
+            </div>
+            <Link
+              href="/spots"
+              className="hidden md:flex"
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "8px",
+                color: "rgba(255,255,255,0.4)",
+                fontSize: "0.875rem",
+                textDecoration: "none",
+                border: "1px solid rgba(255,255,255,0.1)",
+                padding: "0.5rem 1.2rem",
+                borderRadius: "9999px",
+              }}
+            >
+              Voir tout <ArrowRight size={14} />
+            </Link>
+          </div>
+
           {featuredSpots.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {featuredSpots.map((spot) => (
@@ -108,29 +387,167 @@ export default async function HomePage() {
               ))}
             </div>
           ) : (
-            <div className="text-center py-20 border border-white/5 rounded-2xl">
-              <p className="text-gray-500">Les spots arrivent bientôt.</p>
+            <div
+              style={{
+                textAlign: "center",
+                padding: "5rem 2rem",
+                border: "1px solid rgba(255,255,255,0.05)",
+                borderRadius: "1.5rem",
+              }}
+            >
+              <p style={{ fontSize: "3rem", marginBottom: "1rem" }}>🏝️</p>
+              <p style={{ color: "rgba(255,255,255,0.5)" }}>Les spots arrivent bientôt.</p>
             </div>
           )}
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="max-w-7xl mx-auto px-4 md:px-8 py-20">
-        <div className="relative overflow-hidden rounded-3xl border border-violet-600/20 bg-gradient-to-br from-violet-950/40 to-black p-10 md:p-16 text-center">
-          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-32 bg-violet-600/20 blur-3xl" />
-          <p className="text-violet-400 text-xs font-medium uppercase tracking-widest mb-4 relative z-10">Tu organises un événement ?</p>
-          <h2 className="font-display font-extrabold text-3xl md:text-5xl text-white mb-4 relative z-10">Rejoins BabiMood</h2>
-          <p className="text-gray-400 text-base max-w-lg mx-auto mb-8 relative z-10">
-            Soumets ton événement pour toucher la communauté nightlife d&apos;Abidjan.
-          </p>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 relative z-10">
-            <Link href="/soumettre" className="btn-primary text-base px-8 py-4">
-              Soumettre mon événement <ArrowRight size={16} />
-            </Link>
-            <a href="https://wa.me/225XXXXXXXXX" target="_blank" rel="noopener noreferrer" className="btn-outline text-base px-8 py-4">
-              Nous contacter sur WhatsApp
-            </a>
+      {/* ── CTA FINAL ───────────────────────────────────── */}
+      <section style={{ padding: "6rem 0", background: "#080808" }}>
+        <div className="max-w-7xl mx-auto px-4 md:px-8">
+          <div
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              borderRadius: "2rem",
+              border: "1px solid rgba(139,92,246,0.25)",
+              minHeight: "400px",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            {/* BG image */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                backgroundImage: "url('https://images.unsplash.com/photo-1492684223066-81342ee5ff30?w=1600&q=70')",
+                backgroundSize: "cover",
+                backgroundPosition: "center top",
+                filter: "brightness(0.25)",
+              }}
+            />
+
+            {/* Gradient overlay */}
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background: "linear-gradient(135deg, rgba(76,29,149,0.6) 0%, rgba(8,8,8,0.4) 100%)",
+              }}
+            />
+
+            {/* Glow top */}
+            <div
+              style={{
+                position: "absolute",
+                top: 0,
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "500px",
+                height: "150px",
+                background: "rgba(139,92,246,0.3)",
+                filter: "blur(60px)",
+              }}
+            />
+
+            <div style={{ position: "relative", zIndex: 10, textAlign: "center", padding: "4rem 2rem" }}>
+              <span
+                style={{
+                  display: "inline-block",
+                  background: "rgba(139,92,246,0.2)",
+                  border: "1px solid rgba(139,92,246,0.4)",
+                  color: "#c4b5fd",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  letterSpacing: "0.15em",
+                  textTransform: "uppercase",
+                  padding: "0.4rem 1rem",
+                  borderRadius: "9999px",
+                  marginBottom: "1.5rem",
+                }}
+              >
+                Tu organises un événement ?
+              </span>
+
+              <h2
+                style={{
+                  fontFamily: "Syne, sans-serif",
+                  fontWeight: 800,
+                  fontSize: "clamp(2rem, 5vw, 4rem)",
+                  color: "#fff",
+                  lineHeight: 1.1,
+                  marginBottom: "1.2rem",
+                }}
+              >
+                Rejoins BabiMood
+              </h2>
+
+              <p
+                style={{
+                  color: "rgba(255,255,255,0.55)",
+                  fontSize: "1.05rem",
+                  maxWidth: "480px",
+                  margin: "0 auto 2.5rem",
+                  lineHeight: 1.6,
+                }}
+              >
+                Soumets ton événement pour toucher la communauté nightlife d&apos;Abidjan.
+              </p>
+
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "1rem",
+                }}
+              >
+                <Link
+                  href="/soumettre"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+                    color: "white",
+                    fontWeight: 600,
+                    padding: "1rem 2rem",
+                    borderRadius: "9999px",
+                    fontSize: "0.95rem",
+                    textDecoration: "none",
+                    boxShadow: "0 0 30px rgba(124,58,237,0.5)",
+                    border: "1px solid rgba(167,139,250,0.3)",
+                  }}
+                >
+                  Soumettre mon événement
+                  <ArrowRight size={16} />
+                </Link>
+                <a
+                  href="https://wa.me/225XXXXXXXXX"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "10px",
+                    background: "rgba(255,255,255,0.06)",
+                    color: "rgba(255,255,255,0.85)",
+                    fontWeight: 600,
+                    padding: "1rem 2rem",
+                    borderRadius: "9999px",
+                    fontSize: "0.95rem",
+                    textDecoration: "none",
+                    border: "1px solid rgba(255,255,255,0.15)",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  Nous contacter sur WhatsApp
+                </a>
+              </div>
+            </div>
           </div>
         </div>
       </section>
