@@ -1,105 +1,129 @@
-"use client";
+import { createClient } from "@/lib/supabase/server";
+import Link from "next/link";
+import { Plus, Edit, Star } from "lucide-react";
+import { spotTypeLabels } from "@/lib/utils";
+import { Spot } from "@/types";
+import AdminDeleteButton from "@/components/admin/AdminDeleteButton";
+import AdminToggleFeatured from "@/components/admin/AdminToggleFeatured";
 
-import { useState, useEffect } from "react";
-import SpotCard from "@/components/spots/SpotCard";
-import { Spot, SpotType } from "@/types";
-import { createClient } from "@/lib/supabase/client";
-
-const spotFilters: { value: string; label: string }[] = [
-  { value: "tous", label: "Tous" },
-  { value: "nightclub", label: "Night Clubs" },
-  { value: "rooftop", label: "Rooftops" },
-  { value: "lounge", label: "Lounges" },
-  { value: "plage", label: "Plages" },
-  { value: "restaurant", label: "Restaurants" },
-  { value: "bar", label: "Bars" },
-];
-
-export default function SpotsPage() {
-  const [filter, setFilter] = useState("tous");
-  const [spots, setSpots] = useState<Spot[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    async function fetchSpots() {
-      setLoading(true);
-      const supabase = createClient();
-
-      let query = supabase
-        .from("spots")
-        .select("*")
-        .eq("is_published", true)
-        .order("is_featured", { ascending: false });
-
-      if (filter !== "tous") {
-        query = query.eq("type", filter as SpotType);
-      }
-
-      const { data } = await query;
-      setSpots((data as Spot[]) ?? []);
-      setLoading(false);
-    }
-    fetchSpots();
-  }, [filter]);
+export default async function AdminSpotsPage() {
+  const supabase = await createClient();
+  const { data: spots } = await supabase
+    .from("spots")
+    .select("*")
+    .order("created_at", { ascending: false });
 
   return (
-    <div className="min-h-screen pt-24 pb-20">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* Header */}
-        <div className="mb-10">
-          <p className="text-violet-400 text-xs font-medium uppercase tracking-widest mb-2">
-            Les meilleurs endroits
-          </p>
-          <h1 className="section-title mb-4">Top Spots Abidjan</h1>
-          <p className="text-gray-400 text-base max-w-xl">
-            Clubs, rooftops, lounges, plages — les adresses incontournables d&apos;Abidjan.
+    <div>
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem", gap: "1rem" }}>
+        <div>
+          <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.5rem", color: "#fff" }}>
+            Spots
+          </h1>
+          <p style={{ color: "#555", fontSize: "0.8rem", marginTop: "2px" }}>
+            {spots?.length ?? 0} spots au total
           </p>
         </div>
+        <Link
+          href="/admin/spots/new"
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "6px",
+            background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+            color: "white", fontWeight: 600,
+            padding: "0.6rem 1.1rem",
+            borderRadius: "9999px", fontSize: "0.85rem",
+            textDecoration: "none", flexShrink: 0,
+          }}
+        >
+          <Plus size={15} /> Ajouter
+        </Link>
+      </div>
 
-        {/* Filters */}
-        <div className="flex gap-2 overflow-x-auto pb-2 mb-8">
-          {spotFilters.map((f) => (
-            <button
-              key={f.value}
-              onClick={() => setFilter(f.value)}
-              className={`filter-pill ${
-                filter === f.value ? "filter-pill-active" : "filter-pill-inactive"
-              }`}
+      {(!spots || spots.length === 0) ? (
+        <div style={{ textAlign: "center", padding: "3rem 1rem", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "1rem" }}>
+          <p style={{ color: "#555" }}>Aucun spot. Créez le premier !</p>
+          <Link href="/admin/spots/new" style={{
+            display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "1rem",
+            background: "linear-gradient(135deg, #7c3aed, #6d28d9)", color: "white",
+            fontWeight: 600, padding: "0.65rem 1.25rem", borderRadius: "9999px",
+            fontSize: "0.85rem", textDecoration: "none",
+          }}>
+            <Plus size={15} /> Créer un spot
+          </Link>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {spots.map((spot: Spot) => (
+            <div
+              key={spot.id}
+              style={{
+                background: "#111",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "0.875rem",
+                padding: "1rem",
+              }}
             >
-              {f.label}
-            </button>
-          ))}
-        </div>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem", marginBottom: "0.6rem" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    {spot.is_featured && <Star size={12} style={{ color: "#fbbf24", flexShrink: 0 }} />}
+                    <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.95rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {spot.name}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: "6px", marginTop: "5px", flexWrap: "wrap" }}>
+                    <span style={{
+                      background: "rgba(34,211,238,0.12)", color: "#22d3ee",
+                      fontSize: "10px", fontWeight: 600, padding: "2px 8px",
+                      borderRadius: "9999px", textTransform: "uppercase",
+                    }}>
+                      {spotTypeLabels[spot.type]}
+                    </span>
+                    <span style={{
+                      background: spot.is_published ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.06)",
+                      color: spot.is_published ? "#4ade80" : "#555",
+                      fontSize: "10px", fontWeight: 600, padding: "2px 8px",
+                      borderRadius: "9999px",
+                    }}>
+                      {spot.is_published ? "Publié" : "Brouillon"}
+                    </span>
+                    {spot.is_featured && (
+                      <span style={{
+                        background: "rgba(139,92,246,0.15)", color: "#a78bfa",
+                        fontSize: "10px", fontWeight: 600, padding: "2px 8px",
+                        borderRadius: "9999px",
+                      }}>
+                        ✦ Top Spot
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-        {/* Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[...Array(6)].map((_, i) => (
-              <div key={i} className="card-dark animate-pulse">
-                <div className="aspect-[3/2] bg-gray-700/50" />
-                <div className="p-4 space-y-3">
-                  <div className="h-4 bg-gray-700/50 rounded w-3/4" />
-                  <div className="h-3 bg-gray-700/50 rounded w-1/2" />
+                <div style={{ display: "flex", alignItems: "center", gap: "4px", flexShrink: 0 }}>
+                  <AdminToggleFeatured id={spot.id} table="spots" featured={spot.is_featured} />
+                  <Link
+                    href={`/admin/spots/${spot.id}/edit`}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      width: "32px", height: "32px", borderRadius: "8px",
+                      background: "rgba(255,255,255,0.04)", color: "#888",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <Edit size={13} />
+                  </Link>
+                  <AdminDeleteButton id={spot.id} table="spots" />
                 </div>
               </div>
-            ))}
-          </div>
-        ) : spots.length > 0 ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {spots.map((spot) => (
-              <SpotCard key={spot.id} spot={spot} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-24 border border-white/5 rounded-2xl">
-            <p className="text-4xl mb-4">🏝️</p>
-            <p className="text-gray-400 font-medium">Aucun spot pour ce filtre.</p>
-            <button onClick={() => setFilter("tous")} className="btn-outline mt-6 text-sm">
-              Voir tous les spots
-            </button>
-          </div>
-        )}
-      </div>
+
+              <p style={{ color: "#555", fontSize: "12px" }}>
+                📍 {spot.location}
+                {spot.vibe && <span style={{ color: "#666" }}> · {spot.vibe}</span>}
+              </p>
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

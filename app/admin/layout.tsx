@@ -13,23 +13,28 @@ export default async function AdminLayout({
   if (!user) redirect("/admin/login");
 
   return (
-    <div
-      style={{
-        display: "flex",
-        minHeight: "100vh",
-        background: "#080808",
-        position: "fixed",
-        inset: 0,
-        zIndex: 200,
-        overflowY: "auto",
-      }}
-    >
+    <div style={{
+      position: "fixed",
+      inset: 0,
+      zIndex: 200,
+      background: "#080808",
+      display: "flex",
+      overflow: "hidden",
+    }}>
+      {/* Sidebar desktop uniquement */}
       <AdminSidebar />
-      <div
-        style={{ flex: 1, overflowX: "hidden", overflowY: "auto" }}
-        className="pt-14 md:pt-0"
+
+      {/* Contenu scrollable */}
+      <div style={{
+        flex: 1,
+        overflowY: "auto",
+        overflowX: "hidden",
+        /* Sur mobile, on compense la topbar fixe de 52px */
+        paddingTop: "52px",
+      }}
+      className="md:pt-0"
       >
-        <div style={{ padding: "1.5rem", maxWidth: "1100px", margin: "0 auto" }}>
+        <div style={{ padding: "1.25rem", width: "100%", boxSizing: "border-box" }}>
           {children}
         </div>
       </div>

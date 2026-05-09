@@ -15,72 +15,115 @@ export default async function AdminSpotsPage() {
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-8">
+      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.5rem", gap: "1rem" }}>
         <div>
-          <h1 className="font-display font-bold text-2xl text-white mb-1">Spots</h1>
-          <p className="text-gray-500 text-sm">{spots?.length ?? 0} spots au total</p>
+          <h1 style={{ fontFamily: "Syne, sans-serif", fontWeight: 800, fontSize: "1.5rem", color: "#fff" }}>
+            Spots
+          </h1>
+          <p style={{ color: "#555", fontSize: "0.8rem", marginTop: "2px" }}>
+            {spots?.length ?? 0} spots au total
+          </p>
         </div>
-        <Link href="/admin/spots/new" className="btn-primary text-sm">
-          <Plus size={16} />
-          Ajouter
+        <Link
+          href="/admin/spots/new"
+          style={{
+            display: "inline-flex", alignItems: "center", gap: "6px",
+            background: "linear-gradient(135deg, #7c3aed, #6d28d9)",
+            color: "white", fontWeight: 600,
+            padding: "0.6rem 1.1rem",
+            borderRadius: "9999px", fontSize: "0.85rem",
+            textDecoration: "none", flexShrink: 0,
+          }}
+        >
+          <Plus size={15} /> Ajouter
         </Link>
       </div>
 
-      <div className="card-dark overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-white/5">
-                <th className="text-left p-4 text-xs text-gray-500 font-medium uppercase tracking-wider">Spot</th>
-                <th className="text-left p-4 text-xs text-gray-500 font-medium uppercase tracking-wider">Type</th>
-                <th className="text-left p-4 text-xs text-gray-500 font-medium uppercase tracking-wider">Lieu</th>
-                <th className="text-left p-4 text-xs text-gray-500 font-medium uppercase tracking-wider">Statut</th>
-                <th className="text-left p-4 text-xs text-gray-500 font-medium uppercase tracking-wider">Actions</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-white/5">
-              {spots?.map((spot: Spot) => (
-                <tr key={spot.id} className="hover:bg-white/2 transition-colors">
-                  <td className="p-4">
-                    <div className="flex items-center gap-3">
-                      {spot.is_featured && <Star size={14} className="text-yellow-400" />}
-                      <span className="text-white text-sm font-medium">{spot.name}</span>
-                    </div>
-                  </td>
-                  <td className="p-4">
-                    <span className="badge bg-cyan-600/20 text-cyan-300 text-[10px]">
+      {(!spots || spots.length === 0) ? (
+        <div style={{ textAlign: "center", padding: "3rem 1rem", border: "1px solid rgba(255,255,255,0.06)", borderRadius: "1rem" }}>
+          <p style={{ color: "#555" }}>Aucun spot. Créez le premier !</p>
+          <Link href="/admin/spots/new" style={{
+            display: "inline-flex", alignItems: "center", gap: "6px", marginTop: "1rem",
+            background: "linear-gradient(135deg, #7c3aed, #6d28d9)", color: "white",
+            fontWeight: 600, padding: "0.65rem 1.25rem", borderRadius: "9999px",
+            fontSize: "0.85rem", textDecoration: "none",
+          }}>
+            <Plus size={15} /> Créer un spot
+          </Link>
+        </div>
+      ) : (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          {spots.map((spot: Spot) => (
+            <div
+              key={spot.id}
+              style={{
+                background: "#111",
+                border: "1px solid rgba(255,255,255,0.06)",
+                borderRadius: "0.875rem",
+                padding: "1rem",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem", marginBottom: "0.6rem" }}>
+                <div style={{ flex: 1, minWidth: 0 }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                    {spot.is_featured && <Star size={12} style={{ color: "#fbbf24", flexShrink: 0 }} />}
+                    <span style={{ color: "#fff", fontWeight: 600, fontSize: "0.95rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                      {spot.name}
+                    </span>
+                  </div>
+                  <div style={{ display: "flex", gap: "6px", marginTop: "5px", flexWrap: "wrap" }}>
+                    <span style={{
+                      background: "rgba(34,211,238,0.12)", color: "#22d3ee",
+                      fontSize: "10px", fontWeight: 600, padding: "2px 8px",
+                      borderRadius: "9999px", textTransform: "uppercase",
+                    }}>
                       {spotTypeLabels[spot.type]}
                     </span>
-                  </td>
-                  <td className="p-4 text-gray-400 text-sm truncate max-w-[150px]">{spot.location}</td>
-                  <td className="p-4">
-                    <span className={`badge text-[10px] ${spot.is_published ? "bg-green-600/20 text-green-400" : "bg-gray-700 text-gray-500"}`}>
+                    <span style={{
+                      background: spot.is_published ? "rgba(34,197,94,0.15)" : "rgba(255,255,255,0.06)",
+                      color: spot.is_published ? "#4ade80" : "#555",
+                      fontSize: "10px", fontWeight: 600, padding: "2px 8px",
+                      borderRadius: "9999px",
+                    }}>
                       {spot.is_published ? "Publié" : "Brouillon"}
                     </span>
-                  </td>
-                  <td className="p-4">
-                    <div className="flex items-center gap-2">
-                      <AdminToggleFeatured id={spot.id} table="spots" featured={spot.is_featured} />
-                      <Link href={`/admin/spots/${spot.id}/edit`} className="p-2 text-gray-400 hover:text-white hover:bg-white/5 rounded-lg transition-colors">
-                        <Edit size={14} />
-                      </Link>
-                      <AdminDeleteButton id={spot.id} table="spots" />
-                    </div>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-          {(!spots || spots.length === 0) && (
-            <div className="text-center py-16">
-              <p className="text-gray-500">Aucun spot. Créez le premier !</p>
-              <Link href="/admin/spots/new" className="btn-primary mt-4 inline-flex text-sm">
-                <Plus size={16} /> Créer un spot
-              </Link>
+                    {spot.is_featured && (
+                      <span style={{
+                        background: "rgba(139,92,246,0.15)", color: "#a78bfa",
+                        fontSize: "10px", fontWeight: 600, padding: "2px 8px",
+                        borderRadius: "9999px",
+                      }}>
+                        ✦ Top Spot
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div style={{ display: "flex", alignItems: "center", gap: "4px", flexShrink: 0 }}>
+                  <AdminToggleFeatured id={spot.id} table="spots" featured={spot.is_featured} />
+                  <Link
+                    href={`/admin/spots/${spot.id}/edit`}
+                    style={{
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      width: "32px", height: "32px", borderRadius: "8px",
+                      background: "rgba(255,255,255,0.04)", color: "#888",
+                      textDecoration: "none",
+                    }}
+                  >
+                    <Edit size={13} />
+                  </Link>
+                  <AdminDeleteButton id={spot.id} table="spots" />
+                </div>
+              </div>
+
+              <p style={{ color: "#555", fontSize: "12px" }}>
+                📍 {spot.location}
+                {spot.vibe && <span style={{ color: "#666" }}> · {spot.vibe}</span>}
+              </p>
             </div>
-          )}
+          ))}
         </div>
-      </div>
+      )}
     </div>
   );
 }
