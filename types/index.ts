@@ -16,12 +16,21 @@ export type SpotType =
   | "restaurant"
   | "bar";
 
+export type RecurrenceRule =
+  | "weekly_friday"
+  | "weekly_saturday"
+  | "weekly_sunday"
+  | "every_weekend"
+  | "monthly_first_saturday"
+  | "monthly_last_friday"
+  | "biweekly";
+
 export interface Event {
   id: string;
   title: string;
   description: string;
   image_url: string;
-  date: string; // ISO string
+  date: string;
   time: string;
   location: string;
   category: EventCategory;
@@ -29,6 +38,8 @@ export interface Event {
   ticket_link?: string;
   is_featured: boolean;
   is_published: boolean;
+  is_recurring: boolean;
+  recurrence_rule?: RecurrenceRule | null;
   price?: number;
   created_at: string;
 }
@@ -37,8 +48,8 @@ export interface Spot {
   id: string;
   name: string;
   description: string;
-  vibe: string; // courte description de l'ambiance
-  images: string[]; // tableau d'URLs
+  vibe: string;
+  images: string[];
   location: string;
   type: SpotType;
   instagram_link?: string;
